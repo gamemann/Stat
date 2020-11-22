@@ -93,6 +93,9 @@ int main(int argc, char *argv[])
 
     while (1)
     {
+        // Sleep for a second.
+        sleep(1);
+        
         // Get current total packet count and subtract totpckts from it to get current PPS.
         uint64_t curpckts = getstat(path);
         uint64_t pps = curpckts - totpckts;
@@ -107,9 +110,6 @@ int main(int argc, char *argv[])
         strftime(date, sizeof(date), "%c", tm);
 
         fprintf(stdout, "%" PRIu64 " PPS - %s\n", pps, date);
-
-        // Sleep for a second.
-        sleep(1);
     }
 
     return 0;
