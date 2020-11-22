@@ -10,6 +10,7 @@
  * Simply lower-cases a string.
  * 
  * @param str Pointer to the full string we want to lower-case.
+ * 
  * @return A character pointer to the lower-cased string.
  */
 char *lowerstr(char *str) 
