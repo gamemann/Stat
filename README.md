@@ -30,7 +30,7 @@ Optionally, you may also set conversions with the `-c` or `--convert` arguments 
 Example:
 
 ```
-./bps -i ens18 [-c <"kbps", "mbps", or "gbps"> --custom <integer>]
+./bps -i ens18 -c "mbps"
 ```
 
 ## Credits
