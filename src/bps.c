@@ -101,23 +101,23 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    // Get path to RX packets on Linux file system.
+    // Get path to RX bytes on Linux file system.
     char path[256];
     sprintf(path, "/sys/class/net/%s/statistics/rx_bytes", interface);
 
-    // Get total packet count and create a loop for each second.
+    // Get total byte count and create a loop for each second.
     uint64_t totbps = getstat(path);
 
     while (1)
     {
         // Sleep for a second.
         sleep(1);
-        
-        // Get current total packet count and subtract totpckts from it to get current PPS.
+
+        // Get current total byte count and subtract totbps from it to get current BPS.
         uint64_t curbps = getstat(path);
         uint64_t bps = curbps - totbps;
 
-        // Update totpckts.
+        // Update totbps.
         totbps = curbps;
 
         // Do preset conversions.
