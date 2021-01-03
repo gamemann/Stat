@@ -12,6 +12,7 @@ const struct option opts[] =
     {"path", required_argument, NULL, 'p'},
     {"convert", required_argument, NULL, 'c'},
     {"custom", required_argument, NULL, 1},
+    {"interval", required_argument, NULL, 2},
     {"help", no_argument, NULL, 'h'},
     {NULL, 0, NULL, 0}
 };
@@ -52,6 +53,11 @@ void parsecmdline(int argc, char *argv[], struct cmdline *cmd)
 
                 case 1:
                     cmd->divide = (uint64_t) strtoull((const char *)optarg, (char **)optarg, 0);
+
+                    break;
+
+                case 2:
+                    cmd->interval = (uint64_t) strtoull((const char *)optarg, (char **)optarg, 0);
 
                     break;
 

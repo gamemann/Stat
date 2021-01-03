@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
         fprintf(stdout, "Usage: ./pps -i <interface>\n" \
             "-i --dev => The name of the interface to get PPS from.\n" \
             "-p --path => Use packet count (integer) from a given path instead."
+            "--interval => Use this interval (in microseconds) instead of one second." \
         );
 
         return 0;
@@ -52,8 +53,15 @@ int main(int argc, char *argv[])
 
     while (1)
     {
-        // Sleep for a second.
-        sleep(1);
+        // Check for custom interval. Otherwise, use one second.
+        if (cmd.interval > 0)
+        {
+            usleep(cmd.interval);
+        }
+        else
+        {
+            sleep(1);
+        }
         
         // Get current total packet count and subtract totpckts from it to get current PPS.
         uint64_t curpckts = getstat(path);

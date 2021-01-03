@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
             "-i --dev => The name of the interface to get PPS from.\n" \
             "-c --convert => Convert BPS to either \"kbps\", \"mbps\", or \"gbps\"\n" \
             "--custom => Divides the BPS value by this much before outputting to stdin.\n"
+            "--interval => Use this interval (in microseconds) instead of one second." \
         );
 
         return 0;
@@ -61,8 +62,15 @@ int main(int argc, char *argv[])
 
     while (1)
     {
-        // Sleep for a second.
-        sleep(1);
+        // Check for custom interval. Otherwise, use one second.
+        if (cmd.interval > 0)
+        {
+            usleep(cmd.interval);
+        }
+        else
+        {
+            sleep(1);
+        }
 
         // Get current total byte count and subtract totbps from it to get current BPS.
         uint64_t curbps = getstat(path);
