@@ -1,90 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 #include <inttypes.h>
 #include <errno.h>
-#include <getopt.h>
+#include <unistd.h>
 #include <time.h>
 
 #include "common.h"
-
-uint8_t help = 0;
-char *interface = NULL;
-
-char *conversion = NULL;
-uint64_t divide = 1;
-
-static struct option longoptions[] =
-{
-    {"dev", required_argument, NULL, 'i'},
-    {"convert", required_argument, NULL, 'c'},
-    {"custom", required_argument, NULL, 1},
-    {"help", no_argument, NULL, 'h'},
-    {NULL, 0, NULL, 0}
-};
-
-/**
- * Parses our command line.
- * 
- * @param argc Argument count.
- * @param argv A pointer to our argument character array.
- * 
- * @return void
- */
-void parsecmdline(int argc, char *argv[])
-{
-    int c = -1;
-
-    // Parse command line.
-    while (optind < argc)
-    {
-        if ((c = getopt_long(argc, argv, "i:c:h", longoptions, NULL)) != -1)
-        {
-            switch (c)
-            {
-                case 'i':
-                    interface = optarg;
-
-                    break;
-
-                case 'c':
-                    conversion = lowerstr(optarg);
-
-                    break;
-
-                case 1:
-                    divide = (uint64_t) strtoull((const char *)optarg, (char **)optarg, 0);
-
-                    break;
-
-                case 'h':
-                    help = 1;
-
-                    break;
-
-                case '?':
-                    fprintf(stderr, "Missing argument.\n");
-
-                    break;
-            }
-        }
-        else
-        {
-            optind++;
-        }
-    }
-}
+#include "cmdline.h"
 
 int main(int argc, char *argv[])
 {
     // Start off by parsing our command line.
-    parsecmdline(argc, argv);
+    struct cmdline cmd = {0};
+
+    parsecmdline(argc, argv, &cmd);
 
     // Check for help flag.
-    if (help)
+    if (cmd.help)
     {
         fprintf(stdout, "Usage: ./bps -i <interface> [-c <\"kbps\" or \"mbps\" or \"gbps\"> --custom <integer>]\n" \
+            "-p --path => Use packet count (integer) from a given path instead." \
             "-i --dev => The name of the interface to get PPS from.\n" \
             "-c --convert => Convert BPS to either \"kbps\", \"mbps\", or \"gbps\"\n" \
             "--custom => Divides the BPS value by this much before outputting to stdin.\n"
@@ -94,7 +30,7 @@ int main(int argc, char *argv[])
     }
 
     // Check for interface.
-    if (interface == NULL)
+    if (cmd.interface == NULL)
     {
         fprintf(stderr, "No interface set. Please specify an interface with the `-i` or `--dev` argument.\n");
 
@@ -103,7 +39,22 @@ int main(int argc, char *argv[])
 
     // Get path to RX bytes on Linux file system.
     char path[256];
-    sprintf(path, "/sys/class/net/%s/statistics/rx_bytes", interface);
+
+    if (cmd.path != NULL)
+    {
+        sprintf(path, "%s", cmd.path);
+    }
+    else
+    {
+        sprintf(path, "/sys/class/net/%s/statistics/rx_bytes", cmd.interface);
+    }
+
+    uint64_t divide = 1;
+
+    if (cmd.divide > 0)
+    {
+        divide = cmd.divide;
+    }
 
     // Get total byte count and create a loop for each second.
     uint64_t totbps = getstat(path);
@@ -121,24 +72,24 @@ int main(int argc, char *argv[])
         totbps = curbps;
 
         // Do preset conversions.
-        if (conversion != NULL)
+        if (cmd.conversion != NULL)
         {
-            if (strcmp(conversion, "kbps") == 0)
+            if (strcmp(cmd.conversion, "kbps") == 0)
             {
                 divide = 125;
             }
-            else if (strcmp(conversion, "mbps") == 0)
+            else if (strcmp(cmd.conversion, "mbps") == 0)
             {
                 divide = 125000;
             }
-            else if (strcmp(conversion, "gbps") == 0)
+            else if (strcmp(cmd.conversion, "gbps") == 0)
             {
                 divide = 134217728;
             }
             else
             {
                 // Wrong conversion. Set it back to NULL.
-                conversion = NULL;
+                cmd.conversion = NULL;
             }
         }
 
@@ -150,7 +101,7 @@ int main(int argc, char *argv[])
         struct tm *tm = localtime(&now);
         strftime(date, sizeof(date), "%c", tm);
 
-        fprintf(stdout, "%" PRIu64 " %s - %s\n", output, ((conversion != NULL) ? conversion : (divide == 1) ? "BPS" : "Custom"), date);
+        fprintf(stdout, "%" PRIu64 " %s - %s\n", output, ((cmd.conversion != NULL) ? cmd.conversion : (divide == 1) ? "BPS" : "Custom"), date);
     }
 
     return 0;

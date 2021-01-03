@@ -1,15 +1,17 @@
 CC = clang
 
-ppsobjs += src/common.o src/pps.o
-bpsobjs += src/common.o src/bps.o
+ppsobjs += src/pps.o
+bpsobjs += src/bps.o
+
+commobjs += src/cmdline.o src/common.o
 
 all: pps bps
 
-pps: $(ppsobjs)
-	clang -o pps $(ppsobjs)
+pps: $(commobjs) $(ppsobjs)
+	clang -o pps $(commobjs) $(ppsobjs)
 
-bps: $(bpsobjs)
-	clang -o bps $(bpsobjs)
+bps: $(commobjs) $(bpsobjs)
+	clang -o bps $(commobjs) $(bpsobjs)
 
 clean:
 	rm -f src/*.o
