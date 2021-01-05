@@ -29,10 +29,10 @@ stat [-i <interface> --pps --bps --path <path> -c <"kbps" or "mbps" or "gbps"> -
 --interval => Use this interval (in microseconds) instead of one second.
 ```
 
-**Note** - If you want to receive another counter such as outgoing (TX) bytes, you can set the file to pull the count from with the `-p` (or `--path`) flag. For example:
+**Note** - If you want to receive another counter such as outgoing (TX) packets, you can set the file to pull the count from with the `-p` (or `--path`) flag. For example:
 
 ```
-./stat --convert "mbps" --path /sys/class/net/ens18/statistics/tx_bytes
+stat --convert "mbps" --path /sys/class/net/ens18/statistics/tx_packets
 ```
 
 ## Credits
