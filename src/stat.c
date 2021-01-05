@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
             "-p --path => Use count (integer) from a given path instead." \
             "-i --dev => The name of the interface to use when setting --pps or --bps.\n" \
             "-c --convert => Convert count to either \"kbps\", \"mbps\", or \"gbps\".\n" \
-            "--custom => Divides the count value by this much before outputting to stdin.\n"
+            "--custom => Divides the count value by this much before outputting to stdout.\n"
             "--interval => Use this interval (in microseconds) instead of one second.\n" \
         );
 

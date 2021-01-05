@@ -27,7 +27,7 @@ gstat [-i <interface> --pps --bps --path <path> -c <"kbps" or "mbps" or "gbps"> 
 -p --path => Use count (integer) from a given path on file system.
 -i --dev => The name of the interface to use when setting --pps or --bps.
 -c --convert => Convert to either "kbps", "mbps", or "gbps".
---custom => Divides the count value by this much before outputting to stdin.
+--custom => Divides the count value by this much before outputting to stdout.
 --interval => Use this interval (in microseconds) instead of one second.
 ```
 
