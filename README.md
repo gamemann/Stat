@@ -19,7 +19,7 @@ You may use `make install` to copy the `stat` executable to your `$PATH` via `/u
 General command line usage can be found below.
 
 ```
-stat [-i <interface> --pps --bps --path <path> -c <\"kbps\" or \"mbps\" or \"gbps\"> --custom <integer>]
+stat [-i <interface> --pps --bps --path <path> -c <"kbps" or "mbps" or "gbps"> --custom <integer>]
 --pps => Set path to RX packet path.
 --bps => Set path to RX byte path.
 -p --path => Use count (integer) from a given path on file system.
