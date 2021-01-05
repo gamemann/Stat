@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     // Check for help flag.
     if (cmd.help)
     {
-        fprintf(stdout, "Usage: ./bps -i <interface> [-c <\"kbps\" or \"mbps\" or \"gbps\"> --custom <integer>]\n" \
+        fprintf(stdout, "Usage: ./bps -i <interface> [--pps --bps --path <path> -c <\"kbps\" or \"mbps\" or \"gbps\"> --custom <integer>]\n" \
             "--pps => Set path to RX packet path.\n" \
             "--bps => Set path to RX byte path.\n" \
             "-p --path => Use packet count (integer) from a given path instead." \
