@@ -9,6 +9,9 @@ all: stat
 stat: $(COMMOBJS)
 	clang -o stat $(COMMOBJS) $(STATSRC)
 
+install:
+	cp stat /usr/bin/
+
 clean:
 	rm -f src/*.o
 	rm -f stat
