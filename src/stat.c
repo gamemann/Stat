@@ -22,9 +22,9 @@ int main(int argc, char *argv[])
         fprintf(stdout, "Usage: ./bps -i <interface> [--pps --bps --path <path> -c <\"kbps\" or \"mbps\" or \"gbps\"> --custom <integer>]\n" \
             "--pps => Set path to RX packet path.\n" \
             "--bps => Set path to RX byte path.\n" \
-            "-p --path => Use packet count (integer) from a given path instead." \
+            "-p --path => Use count (integer) from a given path instead." \
             "-i --dev => The name of the interface to get PPS from.\n" \
-            "-c --convert => Convert BPS to either \"kbps\", \"mbps\", or \"gbps\"\n" \
+            "-c --convert => Convert BPS to either \"kbps\", \"mbps\", or \"gbps\".\n" \
             "--custom => Divides the BPS value by this much before outputting to stdin.\n"
             "--interval => Use this interval (in microseconds) instead of one second.\n" \
         );
