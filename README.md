@@ -32,7 +32,7 @@ stat [-i <interface> --pps --bps --path <path> -c <"kbps" or "mbps" or "gbps"> -
 **Note** - If you want to receive another counter such as outgoing (TX) packets, you can set the file to pull the count from with the `-p` (or `--path`) flag. For example:
 
 ```
-stat --convert "mbps" --path /sys/class/net/ens18/statistics/tx_packets
+stat --path /sys/class/net/ens18/statistics/tx_packets
 ```
 
 ## Credits
