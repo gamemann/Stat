@@ -7,14 +7,14 @@ STATSRC += src/stat.c
 all: stat
 
 stat: $(COMMOBJS)
-	clang -o stat $(COMMOBJS) $(STATSRC)
+	clang -o gstat $(COMMOBJS) $(STATSRC)
 
 install:
-	cp stat /usr/bin/
+	cp gstat /usr/bin/
 
 clean:
 	rm -f src/*.o
-	rm -f stat
+	rm -f gstat
 
 .PHONY: stat
 .DEFAULT: all

@@ -13,13 +13,15 @@ yum install devtoolset-7 llvm-toolset-7 llvm-toolset-7-clang-analyzer llvm-tools
 make
 ```
 
-You may use `make install` to copy the `stat` executable to your `$PATH` via `/usr/bin`.
+You may use `make install` to copy the `gstat` executable to your `$PATH` via `/usr/bin`.
+
+**Note** - We use `gstat` instead of `stat` due to other common packages.
 
 ## Command Line Usage
 General command line usage can be found below.
 
 ```
-stat [-i <interface> --pps --bps --path <path> -c <"kbps" or "mbps" or "gbps"> --custom <integer>]
+gstat [-i <interface> --pps --bps --path <path> -c <"kbps" or "mbps" or "gbps"> --custom <integer>]
 --pps => Set path to RX packet path.
 --bps => Set path to RX byte path.
 -p --path => Use count (integer) from a given path on file system.
@@ -32,7 +34,7 @@ stat [-i <interface> --pps --bps --path <path> -c <"kbps" or "mbps" or "gbps"> -
 **Note** - If you want to receive another counter such as outgoing (TX) packets, you can set the file to pull the count from with the `-p` (or `--path`) flag. For example:
 
 ```
-stat --path /sys/class/net/ens18/statistics/tx_packets
+gstat --path /sys/class/net/ens18/statistics/tx_packets
 ```
 
 ## Credits
