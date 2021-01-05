@@ -1,9 +1,11 @@
-# Linux Network Statistics
+# Stat
 ## Description
-A small repository showing how to gather simple network statistics using C on Linux. In this repository, we show how to retrieve the amount of packets per second and bytes per second (supporting common and custom conversions) on a specific interface.
+A small project that allows you to gather statistics (integers/counts) from files on the file system. This was designed for Linux.
 
-## Building Programs
-You can simply use `make` to build these programs. The `Makefile` uses `clang` to compile these programs.
+This is useful for receiving the incoming/outgoing packets per second or incoming/outgoing bytes per second on a network interface.
+
+## Building Program
+You can simply use `make` to build this program. The `Makefile` uses `clang` to compile the program.
 
 ```
 apt-get install clang # (Debian/Ubuntu-based systems)
@@ -11,38 +13,26 @@ yum install devtoolset-7 llvm-toolset-7 llvm-toolset-7-clang-analyzer llvm-tools
 make
 ```
 
-You can make specific programs using `make pps` or `make bps`.
+You may use `make install` to copy the `stat` executable to your `$PATH` via `/usr/bin`.
 
-## Packets Per Second
-This small program retrieves the amount of packets per second going in on an interface. You must specify the interface name via the `-i` or `--dev` arguments.
-
-Example:
+## Command Line Usage
+General command line usage can be found below.
 
 ```
-./pps -i ens18
-```
-
-**Note** - If you want to receive another counter such as outgoing (TX) packets, you can set the file to pull the count from with the `-p` (or `--path`) flag. For example:
-
-```
-./pps -i ens18 --path /sys/class/net/ens18/statistics/tx_packets
-```
-
-## Bytes Per Second
-This small program retrieves the amount of bytes per second going in on an interface. You must specify the interface name via the `-i` or `--dev` arguments.
-
-Optionally, you may also set conversions with the `-c` or `--convert` arguments that accepts `kbps`, `mbps`, or `gbps`. Additionally, you can also specify the `--custom` argument which will divide the bytes per second by this value before outputting.
-
-Example:
-
-```
-./bps -i ens18 -c "mbps"
+stat [-i <interface> --pps --bps --path <path> -c <\"kbps\" or \"mbps\" or \"gbps\"> --custom <integer>]
+--pps => Set path to RX packet path.
+--bps => Set path to RX byte path.
+-p --path => Use count (integer) from a given path on file system.
+-i --dev => The name of the interface to use when setting --pps or --bps.
+-c --convert => Convert to either "kbps", "mbps", or "gbps".
+--custom => Divides the count value by this much before outputting to stdin.
+--interval => Use this interval (in microseconds) instead of one second.
 ```
 
 **Note** - If you want to receive another counter such as outgoing (TX) bytes, you can set the file to pull the count from with the `-p` (or `--path`) flag. For example:
 
 ```
-./bps -i ens18 --convert "mbps" --path /sys/class/net/ens18/statistics/tx_bytes
+./stat --convert "mbps" --path /sys/class/net/ens18/statistics/tx_bytes
 ```
 
 ## Credits
