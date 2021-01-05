@@ -2,7 +2,7 @@
 ## Description
 A small project that allows you to gather statistics (integers/counts) from files on the file system. This was designed for Linux.
 
-This is useful for receiving the incoming/outgoing packets per second or incoming/outgoing bytes per second on a network interface.
+This is useful for retrieving the incoming/outgoing packets per second or incoming/outgoing bytes per second on a network interface.
 
 ## Building Program
 You can simply use `make` to build this program. The `Makefile` uses `clang` to compile the program.
