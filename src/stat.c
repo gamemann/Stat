@@ -20,23 +20,19 @@ int main(int argc, char *argv[])
     if (cmd.help)
     {
         fprintf(stdout, "Usage: ./bps -i <interface> [-c <\"kbps\" or \"mbps\" or \"gbps\"> --custom <integer>]\n" \
+            "--pps => Set path to RX packet path.\n" \
+            "--bps => Set path to RX byte path.\n" \
             "-p --path => Use packet count (integer) from a given path instead." \
             "-i --dev => The name of the interface to get PPS from.\n" \
             "-c --convert => Convert BPS to either \"kbps\", \"mbps\", or \"gbps\"\n" \
             "--custom => Divides the BPS value by this much before outputting to stdin.\n"
-            "--interval => Use this interval (in microseconds) instead of one second." \
+            "--interval => Use this interval (in microseconds) instead of one second.\n" \
         );
 
         return 0;
     }
 
-    // Check for interface.
-    if (cmd.interface == NULL)
-    {
-        fprintf(stderr, "No interface set. Please specify an interface with the `-i` or `--dev` argument.\n");
-
-        return 1;
-    }
+    char *unit = "PPS";
 
     // Get path to RX bytes on Linux file system.
     char path[256];
@@ -45,15 +41,21 @@ int main(int argc, char *argv[])
     {
         sprintf(path, "%s", cmd.path);
     }
+    else if (cmd.bps)
+    {
+        unit = "BPS";
+        sprintf(path, "/sys/class/net/%s/statistics/rx_bytes", (cmd.interface != NULL) ? cmd.interface : "eth0");
+    }
     else
     {
-        sprintf(path, "/sys/class/net/%s/statistics/rx_bytes", cmd.interface);
+        sprintf(path, "/sys/class/net/%s/statistics/rx_packets", (cmd.interface != NULL) ? cmd.interface : "etho");
     }
 
     uint64_t divide = 1;
 
     if (cmd.divide > 0)
     {
+        unit = "Custom";
         divide = cmd.divide;
     }
 
@@ -84,14 +86,17 @@ int main(int argc, char *argv[])
         {
             if (strcmp(cmd.conversion, "kbps") == 0)
             {
+                unit = "kbps";
                 divide = 125;
             }
             else if (strcmp(cmd.conversion, "mbps") == 0)
             {
+                unit = "mbps";
                 divide = 125000;
             }
             else if (strcmp(cmd.conversion, "gbps") == 0)
             {
+                unit = "gbps";
                 divide = 134217728;
             }
             else
@@ -109,7 +114,7 @@ int main(int argc, char *argv[])
         struct tm *tm = localtime(&now);
         strftime(date, sizeof(date), "%c", tm);
 
-        fprintf(stdout, "%" PRIu64 " %s - %s\n", output, ((cmd.conversion != NULL) ? cmd.conversion : (divide == 1) ? "BPS" : "Custom"), date);
+        fprintf(stdout, "%" PRIu64 " %s - %s\n", output, unit, date);
     }
 
     return 0;

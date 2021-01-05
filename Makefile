@@ -1,23 +1,17 @@
 CC = clang
 
-ppsobjs += src/pps.o
-bpsobjs += src/bps.o
+COMMOBJS += src/cmdline.o src/common.o
 
-commobjs += src/cmdline.o src/common.o
+STATSRC += src/stat.c
 
-all: pps bps
+all: stat
 
-pps: $(commobjs) $(ppsobjs)
-	clang -o pps $(commobjs) $(ppsobjs)
-
-bps: $(commobjs) $(bpsobjs)
-	clang -o bps $(commobjs) $(bpsobjs)
+stat: $(COMMOBJS)
+	clang -o stat $(COMMOBJS) $(STATSRC)
 
 clean:
 	rm -f src/*.o
-	rm -f pps
-	rm -f bps
+	rm -f stat
 
-.PHONY: pps bps
-
+.PHONY: stat
 .DEFAULT: all

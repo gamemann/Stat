@@ -13,6 +13,8 @@ const struct option opts[] =
     {"convert", required_argument, NULL, 'c'},
     {"custom", required_argument, NULL, 1},
     {"interval", required_argument, NULL, 2},
+    {"pps", no_argument, NULL, 3},
+    {"bps", no_argument, NULL, 4},
     {"help", no_argument, NULL, 'h'},
     {NULL, 0, NULL, 0}
 };
@@ -58,6 +60,16 @@ void parsecmdline(int argc, char *argv[], struct cmdline *cmd)
 
                 case 2:
                     cmd->interval = (uint64_t) strtoull((const char *)optarg, (char **)optarg, 0);
+
+                    break;
+
+                case 3:
+                    cmd->pps = 1;
+
+                    break;
+
+                case 4:
+                    cmd->bps = 1;
 
                     break;
 

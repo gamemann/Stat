@@ -12,6 +12,9 @@ struct cmdline
     uint64_t divide;
 
     uint64_t interval;
+
+    unsigned int pps : 1;
+    unsigned int bps : 1;
 };
 
 void parsecmdline(int argc, char *argv[], struct cmdline *cmd);
