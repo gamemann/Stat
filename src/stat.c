@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     }
 
     // Get total byte count and create a loop for each second.
-    uint64_t totbps = getstat(path);
+    uint64_t tot = getstat(path);
 
     uint64_t count;
     time_t stime = time(NULL) + cmd.timelimit;
@@ -92,12 +92,11 @@ int main(int argc, char *argv[])
             sleep(1);
         }
 
-        // Get current total byte count and subtract totbps from it to get current BPS.
-        uint64_t curbps = getstat(path);
-        uint64_t bps = curbps - totbps;
+        uint64_t cur = getstat(path);
+        uint64_t new = cur - tot;
 
         // Update totbps.
-        totbps = curbps;
+        tot = cur;
 
         // Do preset conversions.
         if (cmd.conversion != NULL)
@@ -124,9 +123,9 @@ int main(int argc, char *argv[])
             }
         }
 
-        uint64_t output = bps / ((divide > 0) ? divide : 1);
+        uint64_t output = new / ((divide > 0) ? divide : 1);
 
-        // Get date in human format and print BPS with it (conversion supported).
+        // Get date in human format and print current counter with it.
         char date[255];
         time_t now = time(NULL);
         struct tm *tm = localtime(&now);
