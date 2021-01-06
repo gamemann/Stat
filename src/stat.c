@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 
     char *unit = "PPS";
 
-    // Get path to RX bytes on Linux file system.
+    // Get path on Linux file system.
     char path[256];
 
     if (cmd.path != NULL)
@@ -61,16 +61,19 @@ int main(int argc, char *argv[])
         divide = cmd.divide;
     }
 
-    // Get total byte count and create a loop for each second.
+    // Get current counter and create a loop.
     uint64_t tot = getstat(path);
+    uint64_t totcount = 0;
 
-    uint64_t count;
+    uint64_t count = 0;
     time_t stime = time(NULL) + cmd.timelimit;
+    time_t sttime = time(NULL);
+    time_t curtime = 0;
 
     while (1)
     {
         // Check stops.
-        time_t curtime = time(NULL);
+        curtime = time(NULL);
 
         if (cmd.timelimit > 0 && curtime >= stime)
         {
@@ -124,6 +127,7 @@ int main(int argc, char *argv[])
         }
 
         uint64_t output = new / ((divide > 0) ? divide : 1);
+        totcount += output;
 
         // Get date in human format and print current counter with it.
         char date[255];
@@ -135,6 +139,11 @@ int main(int argc, char *argv[])
 
         count++;
     }
+
+    time_t tottime = curtime - sttime;
+    uint64_t avgcount = totcount / count;
+
+    fprintf(stdout, "Received an average of %" PRIu64 " %s with a total of %" PRIu64 " %s over %lu seconds.\n", avgcount, unit, totcount, unit, tottime);
 
     return 0;
 }
