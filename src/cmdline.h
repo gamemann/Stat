@@ -12,6 +12,9 @@ struct cmdline
     uint64_t divide;
 
     uint64_t interval;
+    
+    uint64_t countmax;
+    uint32_t timelimit;
 
     unsigned int pps : 1;
     unsigned int bps : 1;

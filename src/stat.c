@@ -27,6 +27,8 @@ int main(int argc, char *argv[])
             "-c --convert => Convert count to either \"kbps\", \"mbps\", or \"gbps\".\n" \
             "--custom => Divides the count value by this much before outputting to stdout.\n"
             "--interval => Use this interval (in microseconds) instead of one second.\n" \
+            "--count -n => Maximum amount of times to request the counter before stopping program (0 = no limit).\n" \
+            "--time -t => Time limit (in seconds) before stopping program (0 = no limit).\n" \
         );
 
         return 0;
@@ -62,8 +64,24 @@ int main(int argc, char *argv[])
     // Get total byte count and create a loop for each second.
     uint64_t totbps = getstat(path);
 
+    uint64_t count;
+    time_t stime = time(NULL) + cmd.timelimit;
+
     while (1)
     {
+        // Check stops.
+        time_t curtime = time(NULL);
+
+        if (cmd.timelimit > 0 && curtime >= stime)
+        {
+            break;
+        }
+
+        if (cmd.countmax > 0 && count >= cmd.countmax)
+        {
+            break;
+        }
+
         // Check for custom interval. Otherwise, use one second.
         if (cmd.interval > 0)
         {
@@ -115,6 +133,8 @@ int main(int argc, char *argv[])
         strftime(date, sizeof(date), "%c", tm);
 
         fprintf(stdout, "%" PRIu64 " %s - %s\n", output, unit, date);
+
+        count++;
     }
 
     return 0;

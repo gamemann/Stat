@@ -29,6 +29,8 @@ gstat [-i <interface> --pps --bps --path <path> -c <"kbps" or "mbps" or "gbps"> 
 -c --convert => Convert to either "kbps", "mbps", or "gbps".
 --custom => Divides the count value by this much before outputting to stdout.
 --interval => Use this interval (in microseconds) instead of one second.
+--count -n => Maximum amount of times to request the counter before stopping program (0 = no limit).
+--time -t => Time limit (in seconds) before stopping program (0 = no limit).
 ```
 
 **Note** - If you want to receive another counter such as outgoing (TX) packets, you can set the file to pull the count from with the `-p` (or `--path`) flag. For example:

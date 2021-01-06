@@ -13,6 +13,8 @@ const struct option opts[] =
     {"convert", required_argument, NULL, 'c'},
     {"custom", required_argument, NULL, 1},
     {"interval", required_argument, NULL, 2},
+    {"count", required_argument, NULL, 'n'},
+    {"time", required_argument, NULL, 't'},
     {"pps", no_argument, NULL, 3},
     {"bps", no_argument, NULL, 4},
     {"help", no_argument, NULL, 'h'},
@@ -34,7 +36,7 @@ void parsecmdline(int argc, char *argv[], struct cmdline *cmd)
     // Parse command line.
     while (optind < argc)
     {
-        if ((c = getopt_long(argc, argv, "i:p:c:h", opts, NULL)) != -1)
+        if ((c = getopt_long(argc, argv, "i:p:c:n:t:h", opts, NULL)) != -1)
         {
             switch (c)
             {
@@ -70,6 +72,16 @@ void parsecmdline(int argc, char *argv[], struct cmdline *cmd)
 
                 case 4:
                     cmd->bps = 1;
+
+                    break;
+                
+                case 'n':
+                    cmd->countmax = (uint64_t) strtoull((const char *)optarg, (char **)optarg, 0);
+
+                    break;
+
+                case 't':
+                    cmd->timelimit = (uint32_t)strtoul((const char *)optarg, (char **)optarg, 0);
 
                     break;
 
