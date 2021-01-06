@@ -5,9 +5,17 @@
 #include <errno.h>
 #include <unistd.h>
 #include <time.h>
+#include <signal.h>
 
 #include "common.h"
 #include "cmdline.h"
+
+uint8_t cont = 1;
+
+void sighdl(int tmp)
+{
+    cont = 0;
+}
 
 int main(int argc, char *argv[])
 {
@@ -61,21 +69,23 @@ int main(int argc, char *argv[])
         divide = cmd.divide;
     }
 
+    signal(SIGINT, sighdl);
+
     // Get current counter and create a loop.
-    uint64_t tot = getstat(path);
+    uint64_t old = getstat(path);
     uint64_t totcount = 0;
 
     uint64_t count = 0;
-    time_t stime = time(NULL) + cmd.timelimit;
-    time_t sttime = time(NULL);
+    time_t stotime = time(NULL) + cmd.timelimit;
+    time_t statime = time(NULL);
     time_t curtime = 0;
 
-    while (1)
+    while (cont)
     {
         // Check stops.
         curtime = time(NULL);
 
-        if (cmd.timelimit > 0 && curtime >= stime)
+        if (cmd.timelimit > 0 && curtime >= stotime)
         {
             break;
         }
@@ -96,10 +106,10 @@ int main(int argc, char *argv[])
         }
 
         uint64_t cur = getstat(path);
-        uint64_t new = cur - tot;
+        uint64_t new = cur - old;
 
-        // Update totbps.
-        tot = cur;
+        // Save old counter.
+        old = cur;
 
         // Do preset conversions.
         if (cmd.conversion != NULL)
@@ -140,7 +150,7 @@ int main(int argc, char *argv[])
         count++;
     }
 
-    time_t tottime = curtime - sttime;
+    time_t tottime = curtime - statime;
     uint64_t avgcount = totcount / count;
 
     fprintf(stdout, "Received an average of %" PRIu64 " %s with a total of %" PRIu64 " %s over %lu seconds.\n", avgcount, unit, totcount, unit, tottime);
