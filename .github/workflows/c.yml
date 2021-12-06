@@ -1,4 +1,4 @@
-name: C CI
+name: Stat Build
 
 on:
   push:
