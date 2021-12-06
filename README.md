@@ -1,4 +1,5 @@
 # Stat
+![Stat Build Workflow](https://github.com/gamemann/Stat/actions/workflows/c.yml/badge.svg)
 ## Description
 A small project that allows you to gather statistics (integers/counts) from files on the file system. This was designed for Linux.
 
