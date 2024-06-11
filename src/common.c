@@ -6,6 +6,8 @@
 #include <errno.h>
 #include <ctype.h>
 
+#define CMD_BUFFER_SIZE 4096
+
 /**
  * Simply lower-cases a string.
  * 
@@ -93,9 +95,9 @@ char *trim(char* str)
 char *execcmd(const char *cmd)
 {
     FILE* fp;
-    char buffer[128];
+    char buffer[CMD_BUFFER_SIZE];
     size_t size = 0;
-    size_t buffer_size = 128;
+    size_t buffer_size = CMD_BUFFER_SIZE;
     char* result = malloc(buffer_size);
 
     if (result == NULL)
