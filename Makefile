@@ -1,20 +1,25 @@
 CC = clang
 
-COMMOBJS += src/cmdline.o src/common.o
+BUILD_DIR = build
+SRC_DIR = src
 
-STATSRC += src/stat.c
+COMM_OBJS += $(BUILD_DIR)/cmdline.o $(BUILD_DIR)/common.o
 
-all: stat
+all: common stat
 
-stat: $(COMMOBJS)
-	clang -o gstat $(COMMOBJS) $(STATSRC)
+common:
+	clang -O2 -o $(BUILD_DIR)/cmdline.o -c $(SRC_DIR)/cmdline.c
+	clang -O2 -o $(BUILD_DIR)/common.o -c $(SRC_DIR)/common.c
+
+stat: $(COMM_OBJS)
+	clang -O2 -o $(BUILD_DIR)/gstat $(COMM_OBJS) $(SRC_DIR)/stat.c
 
 install:
-	cp gstat /usr/bin/
+	cp $(BUILD_DIR)/gstat /usr/bin/
 
 clean:
-	rm -f src/*.o
-	rm -f gstat
+	rm -f $(SRC_DIR)/*.o
+	rm -f $(BUILD_DIR)/gstat
 
-.PHONY: stat
+.PHONY: all
 .DEFAULT: all
