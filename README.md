@@ -1,7 +1,5 @@
-# Stat
 [![Stat Build Workflow](https://github.com/gamemann/Stat/actions/workflows/build.yml/badge.svg)](https://github.com/gamemann/Stat/actions/workflows/build.yml)
 
-## Description
 A small project that allows you to gather statistics (counters) from files on the file system or command outputs. This was designed for Linux.
 
 This is useful for retrieving the incoming/outgoing packets or bytes per second on a network interface from the file system or from the output of a command such as `ethtool`.
