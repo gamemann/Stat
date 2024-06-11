@@ -81,7 +81,7 @@ NIC statistics:
      tx_queue_1_tx_timeouts: 0
 ```
 
-If I want the `rx_queue_0_packets` value used as the counter (starting at `901268`), you would execute the following command.
+If you want the `rx_queue_0_packets` value used as the counter (starting at `901268`), you would execute the following command.
 
 ```bash
 sudo gstat --cmd "ethtool -S enp1s0" --sep ":" --key "rx_queue_0_packets"
