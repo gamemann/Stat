@@ -17,6 +17,94 @@ void sighdl(int tmp)
     cont = 0;
 }
 
+__uint64_t get_current(cmdline_t *cmd, const char *path)
+{
+    uint64_t cur = 0;
+
+    if (cmd->cmd != NULL)
+    {
+        // Make sure key is available.
+        if (cmd->key == NULL)
+        {
+            fprintf(stderr, "Command specified, but no key for separator included. Please use --key.\n");
+
+            return cur;
+        }
+
+        char *sep = " ";
+
+        if (cmd->sep != NULL)
+        {
+            sep = cmd->sep;
+        }
+
+        char *output = execcmd(cmd->cmd);
+
+        // Make sure we have output.
+        if (output == NULL)
+        {
+            fprintf(stderr, "Command '%s' output is NULL.\n", cmd->cmd);
+
+            return 0;
+        }
+
+        // We need to copy output memory address since strsep() modifies output below.
+        char *output_copy = output;
+
+        // Loop through each line (\n separator).
+        char *line = NULL;
+
+        while ((line = strsep(&output, "\n")))
+        {
+            // Make sure we have at least one byte.
+            if (strlen(line) < 1)
+            {
+                continue;
+            }
+
+            // Trim the string so it doesn't mess anything up.
+            char *trimmed = trim(line);
+
+            // We want to now split by our input separator (key).
+            char *token = NULL;
+
+            // Indicate the position we're at.
+            int i = 1;
+
+            while ((token = strsep(&trimmed, sep)))
+            {
+                // Key check.
+                if (i == 1 && strcmp(cmd->key, token) == 0)
+                {
+                    i++;
+
+                    continue;
+                }
+
+                // If the key matches, i will be 2. Therefore, use current token as value and convert to integer.
+                if (i == 2)
+                {
+                    cur = (__uint64_t) strtoull((const char *)token, (char **)token, 0);
+                }
+
+                break;
+            }
+        }
+
+        // Free output string.
+        if (output_copy != NULL)
+        {
+            free(output_copy);
+        }
+    }
+    else
+    {
+        cur = getstat(path);
+    }
+
+    return cur;
+}
+
 int main(int argc, char *argv[])
 {
     // Start off by parsing our command line.
@@ -37,6 +125,9 @@ int main(int argc, char *argv[])
             "--interval => Use this interval (in microseconds) instead of one second.\n" \
             "--count -n => Maximum amount of times to request the counter before stopping program (0 = no limit).\n" \
             "--time -t => Time limit (in seconds) before stopping program (0 = no limit).\n" \
+            "--cmd => The command to execute and retrieve output from.\n" \
+            "--sep => The separator to apply to the command's output.\n" \
+            "--key => The key to search for when separating the command output.\n" \
         );
 
         return 0;
@@ -72,7 +163,7 @@ int main(int argc, char *argv[])
     signal(SIGINT, sighdl);
 
     // Get current counter and create a loop.
-    uint64_t old = getstat(path);
+    uint64_t old = get_current(&cmd, path);
     uint64_t totcount = 0;
 
     uint64_t count = 0;
@@ -105,7 +196,7 @@ int main(int argc, char *argv[])
             sleep(1);
         }
 
-        uint64_t cur = getstat(path);
+        uint64_t cur = get_current(&cmd, path);
         uint64_t new = cur - old;
 
         // Save old counter.

@@ -2,7 +2,7 @@
 
 #include <inttypes.h>
 
-struct cmdline
+typedef struct cmdline
 {
     char *interface;
     char *path;
@@ -18,6 +18,10 @@ struct cmdline
 
     unsigned int pps : 1;
     unsigned int bps : 1;
-};
+
+    char *cmd;
+    char *sep;
+    char *key;
+} cmdline_t;
 
 void parsecmdline(int argc, char *argv[], struct cmdline *cmd);

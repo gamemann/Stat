@@ -48,3 +48,96 @@ uint64_t getstat(const char *path)
 
     return (uint64_t) strtoull((const char *)buff, (char **)buff, 0);
 }
+
+/**
+ * Trims a string from whitespaces.
+ * 
+ * @param str A pointer to the string you'd like to trim.
+ * 
+ * @return void
+*/
+char *trim(char* str)
+{
+    char* end;
+
+    while (isspace((unsigned char)*str))
+    {
+        str++;
+    }
+
+    if (*str == 0)
+    {
+        return str;
+    }
+
+    end = str + strlen(str) - 1;
+
+    while (end > str && isspace((unsigned char)*end)) 
+    {
+        end--;
+    }
+
+    // Write new null terminator
+    *(end + 1) = '\0';
+
+    return str;
+}
+
+/**
+ * Executes a command and returns the result.
+ * 
+ * @param cmd The command to execute.
+ * 
+ * @return A string.
+*/
+char *execcmd(const char *cmd)
+{
+    FILE* fp;
+    char buffer[128];
+    size_t size = 0;
+    size_t buffer_size = 128;
+    char* result = malloc(buffer_size);
+
+    if (result == NULL)
+    {
+        fprintf(stderr, "Memory allocation failed\n");
+
+        exit(1);
+    }
+
+    result[0] = '\0';
+
+    fp = popen(cmd, "r");
+
+    if (fp == NULL)
+    {
+        fprintf(stderr, "Failed to run command\n");
+
+        exit(1);
+    }
+
+    while (fgets(buffer, sizeof(buffer), fp) != NULL)
+    {
+        size_t buffer_len = strlen(buffer);
+
+        if (size + buffer_len + 1 > buffer_size)
+        {
+            buffer_size *= 2;
+            result = realloc(result, buffer_size);
+
+            if (result == NULL)
+            {
+                fprintf(stderr, "Memory reallocation failed\n");
+
+                exit(1);
+            }
+        }
+
+        strcat(result, buffer);
+        size += buffer_len;
+    }
+
+    pclose(fp);
+
+    return result;
+}
